@@ -21,11 +21,16 @@ export default class Saved extends React.Component {
   render() {
     return (
       <Container className='d-flex justify-content-around p-3'>
-        <Button variant='outline-secondary' onClick={this.openGroups}>
+        <Button variant='secondary' onClick={this.openGroups}>
           Saved groups
         </Button>
-        <Button variant='outline-secondary' onClick={this.props.send}>
+        <Button variant='secondary' onClick={this.props.send}
+          disabled={!this.props.msgValid || !this.props.selectionValid}>
           Send Message
+        </Button>
+        <Button variant='secondary' onClick={this.props.sendAll}
+          disabled={!this.props.msgValid}>
+          Send To All
         </Button>
 
         <Modal show={this.state.showGroups} onHide={this.closeGroups} centered>
@@ -43,10 +48,10 @@ export default class Saved extends React.Component {
             </ListGroup> : 'No saved groups'}
           </Modal.Body>
           <Modal.Footer>
-            <Button variant='outline-secondary' onClick={this.props.save}>
+            <Button variant='secondary' onClick={this.props.save} disabled={!this.props.selectionValid}>
               Save new group
             </Button>
-            <Button variant='outline-secondary' onClick={this.closeGroups}>
+            <Button variant='secondary' onClick={this.closeGroups}>
               Close
             </Button>
           </Modal.Footer>

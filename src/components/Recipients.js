@@ -76,6 +76,7 @@ export default class Recipients extends React.Component {
       <div className='ag-theme-alpine' style={{'height': `${this.state.height}px`}}>
         <AgGridReact
           onGridReady={ params => this.gridApi = params.api }
+          onSelectionChanged={this.props.updateValidity}
           columnDefs={this.state.columnDefs}
           rowData={this.state.rowData}
           defaultColDef={{ resizable: true }}

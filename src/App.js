@@ -11,7 +11,9 @@ class App extends React.Component {
     this.text = React.createRef();
     this.saved = React.createRef();
     this.state = {
-      api: 'https://phaqvwjbw6.execute-api.us-west-1.amazonaws.com/dev/api/v1'
+      api: 'https://phaqvwjbw6.execute-api.us-west-1.amazonaws.com/dev/api/v1',
+      msgValid: false,
+      selectionValid: false
     }
     window.onresize = this.resize
   }
@@ -31,6 +33,22 @@ class App extends React.Component {
       body: formData
     })
   }
+  sendAll = () => {
+    if (!this.text.current.getMsg()) return
+    const formData = new FormData()
+    formData.append('tags', 'default')
+    formData.append('message', this.text.current.getMsg())
+    fetch(`${this.state.api}/send_notification`, {
+      method: 'POST',
+      body: formData
+    })
+  }
+  updateValidity = () => {
+    this.setState({
+      msgValid: this.text.current.getMsg() !== '',
+      selectionValid: this.recipients.current.gridApi.getSelectedNodes().length > 0
+    })
+  }
   readyToSend = () => {
     return (
       this.recipients.current.gridApi.getSelectedNodes().length &&
@@ -48,8 +66,8 @@ class App extends React.Component {
     })
   }
   saveGroup = () => {
+    if (!this.state.selectionValid) return
     let selected = this.recipients.current.gridApi.getSelectedNodes()
-    if (!selected.length) return
     let name = prompt('Enter group name:')
     if (!name.length) return
     let newGroup = {name: name, nodes: selected}
@@ -62,11 +80,15 @@ class App extends React.Component {
       <Container fluid className='h-100 pt-3 pl-3 pr-3 pb-0'>
         <Row className='d-flex'>
           <Col lg={8} className='mb-3'>
-            <Recipients ref={this.recipients} api={this.state.api}/>
+            <Recipients ref={this.recipients} api={this.state.api}
+              updateValidity={this.updateValidity}/>
           </Col>
           <Col lg={4}>
-            <TextBox ref={this.text} send={this.sendMsg} ready={this.readyToSend}/>
-            <Saved ref={this.saved} select={this.select} save={this.saveGroup} send={this.sendMsg}/>
+            <TextBox ref={this.text} send={this.sendMsg} ready={this.readyToSend}
+              updateValidity={this.updateValidity}/>
+            <Saved ref={this.saved} select={this.select} save={this.saveGroup}
+              send={this.sendMsg} sendAll={this.sendAll} msgValid={this.state.msgValid}
+              selectionValid={this.state.selectionValid}/>
           </Col>
         </Row>
       </Container>

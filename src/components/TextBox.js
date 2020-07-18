@@ -21,7 +21,8 @@ export default class TextBox extends React.Component {
       <>
         <textarea ref={this.text} className='w-100 p-3'
          style={{'height': `${this.state.height}px`}}
-          placeholder='Enter message here'/>
+          placeholder='Enter message here'
+          onInput={this.props.updateValidity}/>
         <br/>
       </>
     );
