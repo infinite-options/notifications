@@ -32,6 +32,7 @@ class App extends React.Component {
       method: 'POST',
       body: formData
     })
+    alert('Message sent successfully')
   }
   sendAll = () => {
     if (!this.text.current.getMsg()) return
@@ -42,6 +43,7 @@ class App extends React.Component {
       method: 'POST',
       body: formData
     })
+    alert('Message sent successfully')
   }
   updateValidity = () => {
     this.setState({
