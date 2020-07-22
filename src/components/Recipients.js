@@ -5,14 +5,18 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 export default class Recipients extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
+    this.kitchenMap = new Map()
     let columnDefs = [
       {field: '', headerCheckboxSelection: true, checkboxSelection: true,
        headerCheckboxSelectionFilteredOnly: true, width: 50},
       {headerName: 'Name', field: 'name'},
       {headerName: 'Email', field: 'email'},
       {headerName: 'Phone', field: 'phone'},
+      {headerName: 'Address', field: 'address'},
+      {headerName: 'City', field: 'city'},
       {headerName: 'Zip Code', field: 'zipCode'},
+      {headerName: 'Kitchen', field: 'kitchen'},
       {headerName: '# Orders', field: 'n_orders'},
       {headerName: 'Created', field: 'first_order'},
       {headerName: 'Last Order', field: 'last_order'}
@@ -51,13 +55,24 @@ export default class Recipients extends React.Component {
       height: window.innerWidth >= 900 ? window.innerHeight-32 : 500
     }
   }
-  componentDidMount() {
+  async componentDidMount() {
+    let res = await fetch(`${this.props.api}/kitchens`)
+    let data = await res.json()
+    data.result.forEach(kitchen => {
+      this.kitchenMap.set(kitchen.kitchen_id.S, kitchen.kitchen_name.S)
+    })
     fetch(`${this.props.api}/all_orders`).then(res => res.json().then(data => {
       let rowData = [];
       data.Items.forEach(item => {
         rowData.push({
-          name: item.name.S, email: item.email.S, phone: item.phone.S,
-          zipCode: item.zipCode.N, n_orders: item.number_of_orders.S,
+          name: item.name.S,
+          email: item.email.S,
+          phone: item.phone.S,
+          address: item.street.S,
+          city: item.city.S,
+          kitchen: this.kitchenMap.get(item.kitchen_id.S),
+          zipCode: item.zipCode.N,
+          n_orders: item.number_of_orders.S,
           first_order: item.created_at.S.slice(0, 10),
           last_order: item.last_order_date.S.slice(0, 10)
         })

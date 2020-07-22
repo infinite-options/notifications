@@ -32,6 +32,9 @@ class App extends React.Component {
       method: 'POST',
       body: formData
     })
+    this.setState({
+      msgValid: false
+    })
     alert('Message sent successfully')
   }
   sendAll = () => {
@@ -42,6 +45,9 @@ class App extends React.Component {
     fetch(`${this.state.api}/send_notification`, {
       method: 'POST',
       body: formData
+    })
+    this.setState({
+      msgValid: false
     })
     alert('Message sent successfully')
   }
